@@ -5,7 +5,7 @@ fun addBook(): Book {
     print("Please enter title: ")
     val title: String = readLine()!!
     print("Please enter author: ")
-    var author: String = readLine()!!
+    val author: String = readLine()!!
     print("Please enter genres separated by a comma (no space): ")
     val genre: MutableList<String> = readLine()!!.split(',').toMutableList()
     print("Please enter series: ")

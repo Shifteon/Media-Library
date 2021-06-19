@@ -1,16 +1,14 @@
-import com.beust.klaxon.Klaxon
 import java.io.File
-import java.io.PrintWriter
 import java.sql.*
 
 class Library {
-    var books: MutableList<Book> = mutableListOf()
-    var movies: MutableList<Movie> = mutableListOf()
-    var cds: MutableList<CD> = mutableListOf()
+    private var books: MutableList<Book> = mutableListOf()
+    private var movies: MutableList<Movie> = mutableListOf()
+    private var cds: MutableList<CD> = mutableListOf()
 
-    val databaseName = "media.db"
+    private val databaseName = "media.db"
     // The database connection
-    val conn = connect(databaseName)
+    private val conn = connect(databaseName)
 
     /**
      * Add a book
@@ -61,7 +59,8 @@ class Library {
         // Check if they have any books
         while(result!!.next()) {
             println("Title: ${result.getString("title")}")
-            println("Author: ${result.getString("name")}")
+            val author = result.getString("name").replace("_", " ") // Format it nice
+            println("Author: $author")
             println("Genre: ${result.getString("genre_name")}")
             println("Series: ${result.getString("series_name")}")
             println("Year: ${result.getString("year")}")
@@ -98,21 +97,6 @@ class Library {
     }
 
     /**
-     * Create a list of the media
-     */
-    private fun retrieveMedia(sql: String): MutableList<String> {
-        val pstmt: PreparedStatement? = conn?.prepareStatement(sql)
-        val result = pstmt?.executeQuery()
-        var list: MutableList<String> = mutableListOf()
-
-        while (result!!.next()) {
-            list.add(result.getString("title"))
-        }
-
-        return list
-    }
-
-    /**
      * Displays all the cds
      */
     fun displayCDs() {
@@ -130,11 +114,28 @@ class Library {
         // Check if they have any cds
         while(result!!.next()) {
             println("Title: ${result.getString("title")}")
-            println("Artist: ${result.getString("name")}")
+            // Format it nice
+            val artist = result.getString("name").replace("_", " ")
+            println("Artist: $artist")
             println("Genre: ${result.getString("genre_name")}")
             println("Year: ${result.getString("year")}")
             println("---------------------")
         }
+    }
+
+    /**
+     * Create a list of the media
+     */
+    private fun retrieveMedia(sql: String): MutableList<String> {
+        val pstmt: PreparedStatement? = conn?.prepareStatement(sql)
+        val result = pstmt?.executeQuery()
+        var list: MutableList<String> = mutableListOf()
+
+        while (result!!.next()) {
+            list.add(result.getString("title"))
+        }
+
+        return list
     }
 
     /**
