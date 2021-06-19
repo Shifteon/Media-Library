@@ -1,7 +1,10 @@
 import java.sql.*
 
+var globalFilename: String = ""
+
 fun createNewDatabase(filename: String) {
     val url = "jdbc:sqlite:C:/sqlite3/db/$filename"
+    globalFilename = filename
     try {
         val conn: Connection? = DriverManager.getConnection(url)
         if (conn != null) {
@@ -16,6 +19,7 @@ fun createNewDatabase(filename: String) {
 
 fun connect(filename: String): Connection? {
     val url = "jdbc:sqlite:C:/sqlite3/db/$filename"
+    globalFilename = filename
     var conn: Connection? = null
     try {
         conn = DriverManager.getConnection(url)
@@ -27,7 +31,7 @@ fun connect(filename: String): Connection? {
 }
 
 fun createTable(sql: String) {
-    val url = "jdbc:sqlite:C://sqlite3/db/test.db"
+    val url = "jdbc:sqlite:C://sqlite3/db/media.db"
     try {
         val conn: Connection = DriverManager.getConnection(url)
         val stmt: Statement = conn.createStatement()
@@ -62,7 +66,7 @@ fun createBookTable() {
 
 fun createArtistTable() {
     val sql = "CREATE TABLE IF NOT EXISTS artist (\n" +
-            "       artsit_id INTEGER PRIMARY KEY,\n" +
+            "       artist_id INTEGER PRIMARY KEY,\n" +
             "       first_name TEXT NOT NULL,\n" +
             "       last_name TEXT NOT NULL\n" +
             ");"
@@ -145,10 +149,9 @@ fun createMovieGenreTable() {
     createTable(sql)
 }
 
-fun insertIntoAuthor(first_name: String, last_name: String) {
+fun insertIntoAuthor(first_name: String, last_name: String, conn: Connection? = connect(globalFilename)) {
     val sql = "INSERT INTO author(first_name, last_name) VALUES(?,?);"
     try {
-        val conn: Connection? = connect("test.db")
         val pstmt: PreparedStatement? = conn?.prepareStatement(sql)
         if (pstmt != null) {
             pstmt.setString(1, first_name)
@@ -160,10 +163,9 @@ fun insertIntoAuthor(first_name: String, last_name: String) {
     }
 }
 
-fun insertIntoBook(title: String, year: Int, author_id: Int, series_id: Int) {
-    val sql = "INSERT INTO book(title, year, author_id, series_id) VALUES(?, ?, ?, ?, ?);"
+fun insertIntoBook(title: String, year: Int, author_id: Int, series_id: Int, conn: Connection? = connect(globalFilename)) {
+    val sql = "INSERT INTO book(title, year, author_id, series_id) VALUES(?, ?, ?, ?);"
     try {
-        val conn: Connection? = connect("test.db")
         val pstmt: PreparedStatement? = conn?.prepareStatement(sql)
         if (pstmt != null) {
             pstmt.setString(1, title)
@@ -177,10 +179,9 @@ fun insertIntoBook(title: String, year: Int, author_id: Int, series_id: Int) {
     }
 }
 
-fun insertIntoArtist(first_name: String, last_name: String) {
+fun insertIntoArtist(first_name: String, last_name: String, conn: Connection? = connect(globalFilename)) {
     val sql = "INSERT INTO artist(first_name, last_name) VALUES(?,?);"
     try {
-        val conn: Connection? = connect("test.db")
         val pstmt: PreparedStatement? = conn?.prepareStatement(sql)
         if (pstmt != null) {
             pstmt.setString(1, first_name)
@@ -192,10 +193,9 @@ fun insertIntoArtist(first_name: String, last_name: String) {
     }
 }
 
-fun insertIntoCd(title: String, year: Int, artist_id: Int) {
+fun insertIntoCd(title: String, year: Int, artist_id: Int, conn: Connection? = connect(globalFilename)) {
     val sql = "INSERT INTO cd(title, year, artist_id) VALUES(?, ?, ?);"
     try {
-        val conn: Connection? = connect("test.db")
         val pstmt: PreparedStatement? = conn?.prepareStatement(sql)
         if (pstmt != null) {
             pstmt.setString(1, title)
@@ -208,10 +208,9 @@ fun insertIntoCd(title: String, year: Int, artist_id: Int) {
     }
 }
 
-fun insertIntoMovie(title: String, year: Int, series_id: Int) {
+fun insertIntoMovie(title: String, year: Int, series_id: Int, conn: Connection? = connect(globalFilename)) {
     val sql = "INSERT INTO movie(title, year, series_id) VALUES(?, ?, ?);"
     try {
-        val conn: Connection? = connect("test.db")
         val pstmt: PreparedStatement? = conn?.prepareStatement(sql)
         if (pstmt != null) {
             pstmt.setString(1, title)
@@ -224,10 +223,9 @@ fun insertIntoMovie(title: String, year: Int, series_id: Int) {
     }
 }
 
-fun insertIntoGenre(genre_name: String) {
+fun insertIntoGenre(genre_name: String, conn: Connection? = connect(globalFilename)) {
     val sql = "INSERT INTO genre(genre_name) VALUES(?);"
     try {
-        val conn: Connection? = connect("test.db")
         val pstmt: PreparedStatement? = conn?.prepareStatement(sql)
         if (pstmt != null) {
             pstmt.setString(1, genre_name)
@@ -244,16 +242,15 @@ fun insertIntoGenre(genre_name: String) {
  *                      1 = cd
  *                      2 = movie
  */
-fun insertIntoMediaGenre(genre_id: Int, media_id: Int, mediaType: Int) {
+fun insertIntoMediaGenre(genre_id: Int, media_id: Int, mediaType: Int, conn: Connection? = connect(globalFilename)) {
     // Select which insert statement to use. Allows us to do this in one function
     val sql: String = when (mediaType) {
         0 -> "INSERT INTO book_genre(genre_id, book_id) VALUES(?, ?);"
-        1 -> "INSERT INTO cd_genre(genre_id, book_id) VALUES(?, ?);"
-        2 -> "INSERT INTO movie_genre(genre_id, book_id) VALUES(?, ?);"
+        1 -> "INSERT INTO cd_genre(genre_id, cd_id) VALUES(?, ?);"
+        2 -> "INSERT INTO movie_genre(genre_id, movie_id) VALUES(?, ?);"
         else -> return
     }
     try {
-        val conn: Connection? = connect("test.db")
         val pstmt: PreparedStatement? = conn?.prepareStatement(sql)
         if (pstmt != null) {
             pstmt.setInt(1, genre_id)
@@ -265,10 +262,9 @@ fun insertIntoMediaGenre(genre_id: Int, media_id: Int, mediaType: Int) {
     }
 }
 
-fun insertIntoSeries(series_name: String) {
+fun insertIntoSeries(series_name: String, conn: Connection? = connect(globalFilename)) {
     val sql = "INSERT INTO series(series_name) VALUES(?);"
     try {
-        val conn: Connection? = connect("test.db")
         val pstmt: PreparedStatement? = conn?.prepareStatement(sql)
         if (pstmt != null) {
             pstmt.setString(1, series_name)
