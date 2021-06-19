@@ -6,14 +6,15 @@
 
 * Itellij Idea
 * Kotlin
+* SQLite
+* JDBC
 
 # Useful Websites
 
-* [Web Site Name](http://url.link.goes.here)
-* [Web Site Name](http://url.link.goes.here)
+* [SQLite with Java](https://www.sqlitetutorial.net/sqlite-java/)
+* [Kotilin Docs](https://kotlinlang.org/)
 
 # Future Work
 
-* Item 1
-* Item 2
-* Item 3
+* Add better display features (Filters, sorts, etc.)
+* Fix multiple genres causing item to display multiple times
