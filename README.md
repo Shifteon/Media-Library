@@ -4,7 +4,7 @@ The goal of this application is to help users keep track of and manage their phy
 
 Before running, make sure you have sqlite installed and have this directory on your drive ``` C:\sqlite3\db ```
 
-[Software Demo Video](http://youtube.link.goes.here)
+[Software Demo Video](https://youtu.be/oR5-zfhkdfw)
 
 # Development Environment
 
